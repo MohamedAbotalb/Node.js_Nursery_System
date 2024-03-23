@@ -1,14 +1,13 @@
 const { body, param } = require('express-validator');
 
 const getValidator = param('id')
-  .isMongoId()
   .notEmpty()
-  .withMessage('teacher id should be int');
+  .isMongoId()
+  .withMessage('teacher id should be objectID');
 
 const insertValidator = [
-  body('_id').isMongoId().notEmpty().withMessage('_id should be objectID'),
   body('fullName')
-    .isAlpha()
+    .isString()
     .notEmpty()
     .withMessage('fullname should be alphabetical only'),
   body('password')
@@ -24,7 +23,7 @@ const updateValidator = [
   body('fullName')
     .optional()
     .notEmpty()
-    .isAlpha()
+    .isString()
     .withMessage('fullname should be alphabetical only'),
   body('password')
     .optional()

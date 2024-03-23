@@ -5,25 +5,23 @@ const {
   updateValidator,
 } = require('../Middlewares/Validation/teacher.validator');
 const validationResult = require('../Middlewares/Validation/ValidationResult');
-const {
-  getAllTeachers,
-  getTeacherById,
-  getAllClassSupervisors,
-  insertTeacher,
-  updateTeacher,
-  deleteTeacher,
-} = require('../Controllers/teacher.controller');
+const TeacherController = require('../Controllers/teacher.controller');
 
 router
   .route('/teachers')
-  .get(getAllTeachers)
-  .post(insertValidator, validationResult, insertTeacher);
+  .get(TeacherController.getAll)
+  .post(insertValidator, validationResult, TeacherController.insert);
 
-router.get('/teachers/supervisors', getAllClassSupervisors);
+router.get('/teachers/supervisors', TeacherController.getClassSupervisors);
 router
   .route('/teachers/:id')
-  .get(getValidator, validationResult, getTeacherById)
-  .patch(getValidator, updateValidator, validationResult, updateTeacher)
-  .delete(getValidator, validationResult, deleteTeacher);
+  .get(getValidator, validationResult, TeacherController.getById)
+  .patch(
+    getValidator,
+    updateValidator,
+    validationResult,
+    TeacherController.update
+  )
+  .delete(getValidator, validationResult, TeacherController.delete);
 
 module.exports = router;

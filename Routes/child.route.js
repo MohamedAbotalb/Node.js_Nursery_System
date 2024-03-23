@@ -5,23 +5,22 @@ const {
   updateValidator,
 } = require('../Middlewares/Validation/child.validator');
 const validationResult = require('../Middlewares/Validation/ValidationResult');
-const {
-  getAllChildren,
-  getChildById,
-  insertChild,
-  updateChild,
-  deleteChild,
-} = require('../Controllers/child.controller');
+const ChildController = require('../Controllers/child.controller');
 
 router
   .route('/child')
-  .get(getAllChildren)
-  .post(insertValidator, validationResult, insertChild);
+  .get(ChildController.getAll)
+  .post(insertValidator, validationResult, ChildController.insert);
 
 router
   .route('/child/:id')
-  .get(getValidator, validationResult, getChildById)
-  .patch(getValidator, updateValidator, validationResult, updateChild)
-  .delete(getValidator, validationResult, deleteChild);
+  .get(getValidator, validationResult, ChildController.getById)
+  .patch(
+    getValidator,
+    updateValidator,
+    validationResult,
+    ChildController.update
+  )
+  .delete(getValidator, validationResult, ChildController.delete);
 
 module.exports = router;

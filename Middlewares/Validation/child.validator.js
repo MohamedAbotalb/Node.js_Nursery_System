@@ -5,7 +5,6 @@ const getValidator = param('id')
   .withMessage('teacher id should be int');
 
 const insertValidator = [
-  body('_id').notEmpty().isInt().withMessage('_id should be integer'),
   body('fullName')
     .notEmpty()
     .isString()
