@@ -1,40 +1,112 @@
-const getAllClasses = (req, res, next) => {
-  res.status(200).json({ data: 'Got all classes' });
-};
+const ClassModel = require('../Models/class.model');
+const ChildModel = require('../Models/child.model');
 
-const getClassById = (req, res, next) => {
-  const { id } = req.params;
-  res.status(200).json({ data: `I'm class with id ${id}` });
-};
+class ClassController {
+  async getAll(req, res, next) {
+    try {
+      const classes = await ClassModel.find();
+      res.status(200).json({ data: classes });
+    } catch (error) {
+      next(error);
+    }
+  }
 
-const getClassChildrenInfo = (req, res, next) => {
-  const { id } = req.params;
-  res.status(200).json({ data: `Got class children info with id ${id}` });
-};
+  async getById(req, res, next) {
+    try {
+      const { id } = req.params;
+      const target = await ClassModel.findOne({ _id: id });
+      if (!target) {
+        return res
+          .status(404)
+          .json({ message: `Class not found with id: ${id}` });
+      }
+      res.status(200).json({ data: target });
+    } catch (error) {
+      next(error);
+    }
+  }
 
-const getClassSupervisorInfo = (req, res, next) => {
-  const { id } = req.params;
-  res.status(200).json({ data: `Got class supervisor info with id ${id}` });
-};
+  async getChildrenInfo(req, res, next) {
+    try {
+      const { id } = req.params;
+      const target = await ClassModel.findOne({ _id: id });
+      if (!target) {
+        return res.status(404).json({ message: 'Class not found' });
+      }
+      const childrenInfo = await ChildModel.find({
+        _id: { $in: target.children },
+      });
 
-const insertClass = (req, res, next) => {
-  res.status(201).json({ data: 'Inserted new class' });
-};
+      if (!childrenInfo || childrenInfo.length === 0) {
+        return res
+          .status(404)
+          .json({ message: 'No children found for this class' });
+      }
+      res.status(200).json({ name: target.name, childrenInfo });
+    } catch (err) {
+      next(err);
+    }
+  }
 
-const updateClass = (req, res, next) => {
-  res.status(201).json({ data: `Updated class` });
-};
+  async getSupervisorInfo(req, res, next) {
+    try {
+      const { id } = req.params;
+      const target = await ClassModel.findOne({ _id: id }).populate(
+        'supervisor'
+      );
+      if (!target) {
+        return res
+          .status(404)
+          .json({ message: `Class not found with id: ${id}` });
+      }
+      res
+        .status(200)
+        .json({ class: target.name, supervisor: target.supervisor });
+    } catch (error) {
+      next(error);
+    }
+  }
 
-const deleteClass = (req, res, next) => {
-  res.status(200).json({ data: `Deleted class` });
-};
+  async insert(req, res, next) {
+    try {
+      const newClass = await ClassModel.create(req.body);
+      res.status(201).json({ data: newClass, message: 'Class inserted' });
+    } catch (error) {
+      next(error);
+    }
+  }
 
-module.exports = {
-  getAllClasses,
-  getClassById,
-  getClassChildrenInfo,
-  getClassSupervisorInfo,
-  insertClass,
-  updateClass,
-  deleteClass,
-};
+  async update(req, res, next) {
+    try {
+      const { id } = req.params;
+      const target = await ClassModel.findOneAndUpdate({ _id: id }, req.body, {
+        new: true,
+      });
+      if (!target) {
+        return res
+          .status(404)
+          .json({ message: `Class not found with id: ${id}` });
+      }
+      res.status(200).json({ data: target });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async delete(req, res, next) {
+    try {
+      const { id } = req.params;
+      const target = await ClassModel.findOneAndDelete({ _id: id });
+      if (!target) {
+        return res
+          .status(404)
+          .json({ message: `Class not found with id: ${id}` });
+      }
+      res.status(200).json({ message: `Class deleted with id ${id}` });
+    } catch (error) {
+      next(error);
+    }
+  }
+}
+
+module.exports = new ClassController();
