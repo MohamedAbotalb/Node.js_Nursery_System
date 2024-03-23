@@ -6,25 +6,28 @@ const {
 } = require('../Middlewares/Validation/class.validator');
 const validationResult = require('../Middlewares/Validation/ValidationResult');
 const ClassController = require('../Controllers/class.controller');
+const { isAdmin } = require('../Middlewares/authentication.middleware');
 
 router
   .route('/class')
-  .get(ClassController.getAll)
-  .post(insertValidator, validationResult, ClassController.insert);
+  .get(isAdmin, ClassController.getAll)
+  .post(isAdmin, insertValidator, validationResult, ClassController.insert);
 
 router
   .route('/class/:id')
-  .get(getValidator, validationResult, ClassController.getById)
+  .get(isAdmin, getValidator, validationResult, ClassController.getById)
   .patch(
+    isAdmin,
     getValidator,
     updateValidator,
     validationResult,
     ClassController.update
   )
-  .delete(getValidator, validationResult, ClassController.delete);
+  .delete(isAdmin, getValidator, validationResult, ClassController.delete);
 
 router.get(
   '/class/child/:id',
+  isAdmin,
   getValidator,
   validationResult,
   ClassController.getChildrenInfo
@@ -32,6 +35,7 @@ router.get(
 
 router.get(
   '/class/teacher/:id',
+  isAdmin,
   getValidator,
   validationResult,
   ClassController.getSupervisorInfo

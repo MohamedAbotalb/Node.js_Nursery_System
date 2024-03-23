@@ -6,6 +6,8 @@ const autoIncrement = require('@alec016/mongoose-autoincrement');
 
 autoIncrement.initialize(mongoose.connection);
 
+const { isAuthorized } = require('./Middlewares/authentication.middleware');
+const authRoutes = require('./Routes/authentication.route');
 const teacherRoutes = require('./Routes/teacher.route');
 const childRoutes = require('./Routes/child.route');
 const classRoutes = require('./Routes/class.route');
@@ -38,6 +40,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // Routes
+app.use(authRoutes);
+app.use(isAuthorized);
 app.use(teacherRoutes);
 app.use(childRoutes);
 app.use(classRoutes);
