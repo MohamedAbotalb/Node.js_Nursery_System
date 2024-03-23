@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const AutoIncrement = require('mongoose-sequence')(mongoose);
+const autoIncrement = require('@alec016/mongoose-autoincrement');
 
 const addressSchema = mongoose.Schema(
   {
@@ -19,29 +19,35 @@ const addressSchema = mongoose.Schema(
   { _id: false }
 );
 
-const childSchema = mongoose.Schema(
-  {
-    fullName: {
-      type: String,
-      required: true,
-    },
-    age: {
-      type: Number,
-      required: true,
-    },
-    level: {
-      type: String,
-      required: true,
-      enum: ['PreKG', 'KG1', 'KG2'],
-    },
-    role: {
-      type: String,
-      default: 'child',
-    },
-    address: addressSchema,
+const childSchema = mongoose.Schema({
+  _id: {
+    type: Number,
+    unique: true,
   },
-  { _id: false }
-);
+  fullName: {
+    type: String,
+    required: true,
+  },
+  age: {
+    type: Number,
+    required: true,
+  },
+  level: {
+    type: String,
+    required: true,
+    enum: ['PreKG', 'KG1', 'KG2'],
+  },
+  role: {
+    type: String,
+    default: 'child',
+  },
+  address: addressSchema,
+});
 
-childSchema.plugin(AutoIncrement);
+childSchema.plugin(autoIncrement.plugin, {
+  model: 'Child',
+  startAt: 1,
+  incrementBy: 1,
+  field: '_id',
+});
 module.exports = mongoose.model('Child', childSchema);

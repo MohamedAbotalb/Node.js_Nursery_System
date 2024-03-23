@@ -20,6 +20,7 @@ const teacherSchema = Schema({
   role: {
     type: String,
     default: 'teacher',
+    enum: ['admin', 'teacher'],
   },
 });
 
