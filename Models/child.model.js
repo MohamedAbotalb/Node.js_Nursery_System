@@ -1,9 +1,7 @@
-const { Schema, model } = require('mongoose');
+const mongoose = require('mongoose');
 const AutoIncrement = require('mongoose-sequence')(mongoose);
 
-// Child Data: _id(Number), fullName, age , level (one of PreKG,KG1,KG2), address (city,street and building)
-
-const addressSchema = Schema(
+const addressSchema = mongoose.Schema(
   {
     city: {
       type: String,
@@ -46,4 +44,4 @@ const childSchema = mongoose.Schema(
 );
 
 childSchema.plugin(AutoIncrement);
-module.exports = model('Child', childSchema);
+module.exports = mongoose.model('Child', childSchema);

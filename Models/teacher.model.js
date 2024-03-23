@@ -1,7 +1,5 @@
 const { Schema, model } = require('mongoose');
 
-// teacher Data: _id(objectID), fullname,password, email , image (which is string)
-
 const teacherSchema = Schema({
   fullName: {
     type: String,
