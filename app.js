@@ -2,6 +2,9 @@ const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const autoIncrement = require('@alec016/mongoose-autoincrement');
+
+autoIncrement.initialize(mongoose.connection);
 
 const teacherRoutes = require('./Routes/teacher.route');
 const childRoutes = require('./Routes/child.route');
