@@ -1,6 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
+const mongoose = require('mongoose');
 
 const teacherRoutes = require('./Routes/teacher.route');
 const childRoutes = require('./Routes/child.route');
@@ -9,9 +10,17 @@ const classRoutes = require('./Routes/class.route');
 const app = express();
 const port = process.env.PORT || 8081;
 
-app.listen(port, () => {
-  console.log(`I'm listening on port ${port} ........`);
-});
+mongoose
+  .connect(process.env.DB_URL)
+  .then(() => {
+    console.log('DB Connected....');
+    app.listen(port, () => {
+      console.log(`I am listening on port ${port}..........`);
+    });
+  })
+  .catch((error) => {
+    console.log('DB Problem ...' + error);
+  });
 
 // Logging Middleware
 app.use(morgan('dev'));
