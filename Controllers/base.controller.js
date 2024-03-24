@@ -20,8 +20,8 @@ class BaseController {
 
     this.getAll = async (req, res, next) => {
       try {
-        const items = await this.Model.find();
-        res.status(200).json({ data: items });
+        const target = await this.Model.find();
+        res.status(200).json({ data: target });
       } catch (error) {
         next(error);
       }
@@ -60,8 +60,8 @@ class BaseController {
     this.delete = async (req, res, next) => {
       const { id } = req.params;
       try {
-        const deletedItem = await this.Model.findByIdAndDelete(id);
-        if (!deletedItem) {
+        const target = await this.Model.findByIdAndDelete(id);
+        if (!target) {
           return res
             .status(404)
             .json({ message: `${this.modelName} is not found with id: ${id}` });
@@ -75,4 +75,5 @@ class BaseController {
     };
   }
 }
+
 module.exports = BaseController;
