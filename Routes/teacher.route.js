@@ -1,9 +1,5 @@
 const router = require('express').Router();
-const {
-  getValidator,
-  insertValidator,
-  updateValidator,
-} = require('../Middlewares/Validation/teacher.validator');
+const TeacherValidator = require('../Middlewares/Validation/teacher.validator');
 const validationResult = require('../Middlewares/Validation/ValidationResult');
 const TeacherController = require('../Controllers/teacher.controller');
 const { isAdmin } = require('../Middlewares/authentication.middleware');
@@ -11,7 +7,12 @@ const { isAdmin } = require('../Middlewares/authentication.middleware');
 router
   .route('/teachers')
   .get(isAdmin, TeacherController.getAll)
-  .post(isAdmin, insertValidator, validationResult, TeacherController.insert);
+  .post(
+    isAdmin,
+    TeacherValidator.insert(),
+    validationResult,
+    TeacherController.insert
+  );
 
 router.get(
   '/teachers/supervisors',
@@ -20,14 +21,24 @@ router.get(
 );
 router
   .route('/teachers/:id')
-  .get(isAdmin, getValidator, validationResult, TeacherController.getById)
+  .get(
+    isAdmin,
+    TeacherValidator.get(),
+    validationResult,
+    TeacherController.getById
+  )
   .patch(
     isAdmin,
-    getValidator,
-    updateValidator,
+    TeacherValidator.get(),
+    TeacherValidator.update(),
     validationResult,
     TeacherController.update
   )
-  .delete(isAdmin, getValidator, validationResult, TeacherController.delete);
+  .delete(
+    isAdmin,
+    TeacherValidator.get(),
+    validationResult,
+    TeacherController.delete
+  );
 
 module.exports = router;
