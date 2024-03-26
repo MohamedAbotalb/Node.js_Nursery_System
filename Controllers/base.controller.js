@@ -1,3 +1,5 @@
+const hashingPassword = require('../utils/hash_password.util');
+
 class BaseController {
   constructor(model, modelName) {
     this.Model = model;
@@ -41,7 +43,13 @@ class BaseController {
     this.update = async (req, res, next) => {
       try {
         const { id } = req.params;
-        const target = await this.Model.findByIdAndUpdate(id, req.body, {
+        const updates = req.body;
+
+        // Check if the request includes a password update (for teacher)
+        if (updates.password) {
+          updates.password = await hashingPassword(updates.password);
+        }
+        const target = await this.Model.findByIdAndUpdate(id, updates, {
           new: true,
         });
         if (!target) {
