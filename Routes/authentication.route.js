@@ -5,7 +5,6 @@ const TeacherController = require('../Controllers/teacher.controller');
 const AuthValidator = require('../Middlewares/Validation/authentication.validator');
 const TeacherValidator = require('../Middlewares/Validation/teacher.validator');
 const validationResult = require('../Middlewares/Validation/ValidationResult');
-const upload = require('../Middlewares/file_upload.middleware');
 
 router.post(
   '/register',
