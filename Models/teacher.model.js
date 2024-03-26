@@ -1,4 +1,5 @@
 const { Schema, model } = require('mongoose');
+const hashingPassword = require('../utils/hash_password.util');
 
 const teacherSchema = Schema({
   fullName: {
@@ -22,6 +23,20 @@ const teacherSchema = Schema({
     default: 'teacher',
     enum: ['admin', 'teacher'],
   },
+});
+
+// Encrypt the password before saving the teacher data
+teacherSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) {
+    return next();
+  }
+
+  try {
+    this.password = await hashingPassword(this.password);
+    next();
+  } catch (error) {
+    next(error);
+  }
 });
 
 module.exports = model('Teacher', teacherSchema);
