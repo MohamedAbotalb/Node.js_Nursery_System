@@ -34,7 +34,9 @@ class TeacherController extends BaseController {
       if (existingTeacher) {
         return res.status(400).json({ message: 'Teacher already exists' });
       }
-      const newTeacher = await TeacherModel.create(req.body);
+      const teacherData = req.body;
+      teacherData.image = req.file.path;
+      const newTeacher = await TeacherModel.create(teacherData);
       res
         .status(201)
         .json({ data: newTeacher, message: 'Teacher is inserted' });
