@@ -11,9 +11,18 @@ class TeacherValidator {
   insert() {
     return [
       body('fullName')
-        .isString()
         .notEmpty()
-        .withMessage('fullname should be alphabetical only'),
+        .withMessage('Teacher name is required')
+        .isLength({ min: 3 })
+        .withMessage('Teacher name should be more than 3 characters')
+        .custom((value) => {
+          if (!/^[a-zA-Z\s]+$/.test(value)) {
+            throw new Error(
+              'Teacher name should contain only alphabetical characters'
+            );
+          }
+          return true;
+        }),
       body('password')
         .notEmpty()
         .isStrongPassword()
@@ -32,8 +41,16 @@ class TeacherValidator {
       body('fullName')
         .optional()
         .notEmpty()
-        .isString()
-        .withMessage('fullname should be alphabetical only'),
+        .isLength({ min: 3 })
+        .withMessage('Teacher name should be more than 3 characters')
+        .custom((value) => {
+          if (!/^[a-zA-Z\s]+$/.test(value)) {
+            throw new Error(
+              'Teacher name should contain only alphabetical characters'
+            );
+          }
+          return true;
+        }),
       body('password')
         .optional()
         .notEmpty()

@@ -9,8 +9,17 @@ class ClassValidator {
     return [
       body('name')
         .notEmpty()
-        .isString()
-        .withMessage('fullname should be alphabetical only'),
+        .withMessage('Class name is required')
+        .isLength({ min: 3 })
+        .withMessage('Class name should be more than 3 characters')
+        .custom((value) => {
+          if (!/^[a-zA-Z\s]+$/.test(value)) {
+            throw new Error(
+              'Class name should contain only alphabetical characters'
+            );
+          }
+          return true;
+        }),
       body('supervisor')
         .notEmpty()
         .isMongoId()
@@ -31,8 +40,16 @@ class ClassValidator {
       body('name')
         .optional()
         .notEmpty()
-        .isString()
-        .withMessage('fullname should be alphabetical only'),
+        .isLength({ min: 3 })
+        .withMessage('Class name should be more than 3 characters')
+        .custom((value) => {
+          if (!/^[a-zA-Z\s]+$/.test(value)) {
+            throw new Error(
+              'Class name should contain only alphabetical characters'
+            );
+          }
+          return true;
+        }),
       body('supervisor')
         .optional()
         .notEmpty()

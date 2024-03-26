@@ -2,15 +2,24 @@ const { body, param } = require('express-validator');
 
 class ChildValidator {
   get() {
-    return param('id').isInt().withMessage('teacher id should be int');
+    return param('id').isInt().withMessage('child id should be int');
   }
 
   insert() {
     return [
       body('fullName')
         .notEmpty()
-        .isString()
-        .withMessage('fullname should be alphabetical only'),
+        .withMessage('Child name is required')
+        .isLength({ min: 3 })
+        .withMessage('Child name should be more than 3 characters')
+        .custom((value) => {
+          if (!/^[a-zA-Z\s]+$/.test(value)) {
+            throw new Error(
+              'Child name should contain only alphabetical characters'
+            );
+          }
+          return true;
+        }),
       body('age')
         .notEmpty()
         .withMessage('Age is required')
@@ -48,8 +57,17 @@ class ChildValidator {
     return [
       body('fullName')
         .optional()
-        .isString()
-        .withMessage('fullname should be alphabetical only'),
+        .notEmpty()
+        .isLength({ min: 3 })
+        .withMessage('Child name should be more than 3 characters')
+        .custom((value) => {
+          if (!/^[a-zA-Z\s]+$/.test(value)) {
+            throw new Error(
+              'Child name should contain only alphabetical characters'
+            );
+          }
+          return true;
+        }),
       body('age')
         .optional()
         .notEmpty()
