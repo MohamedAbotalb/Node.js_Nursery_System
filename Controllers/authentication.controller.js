@@ -1,24 +1,23 @@
 const TeacherModel = require('../Models/teacher.model');
-const jwt = require('jsonwebtoken');
+const createToken = require('../utils/create_token.util');
+const comparingPassword = require('../utils/compare_Password.util');
 
 class AuthController {
   async login(req, res, next) {
     try {
       const { email, password } = req.body;
-      const target = await TeacherModel.findOne({ email, password });
-      if (!target) {
-        throw new Error('Your email or password is incorrect');
+      const target = await TeacherModel.findOne({ email });
+      if (target) {
+        const isMatchedPassword = await comparingPassword(
+          password,
+          target.password
+        );
+        if (isMatchedPassword) {
+          const token = createToken(target);
+          return res.json({ message: 'You are Authenticated', token });
+        }
       }
-
-      let token = jwt.sign(
-        {
-          _id: target._id,
-          role: target.role,
-        },
-        process.env.SECRET_KEY,
-        { expiresIn: '1d' }
-      );
-      res.json({ message: 'You are Authenticated', token });
+      res.status(401).json({ message: 'Your email or password is incorrect' });
     } catch (error) {
       next(error);
     }
